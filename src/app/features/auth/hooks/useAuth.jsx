@@ -19,12 +19,20 @@ export const useAuth = () => {
     try {
       console.log('Logging in with:', data);
       
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      
-      // MOCK LOGIN: Populate Redux state so ProtectedRoutes allows access.
-      // TODO: Replace this with `dispatch(loginEmployee(data))` when backend is ready
-      dispatch(addEmployee({ name: "Demo User", email: data.email }));
+      // Attempt real API call
+      try {
+        await dispatch(loginEmployee(data)).unwrap();
+      } catch (apiError) {
+        console.warn("Real API failed. Falling back to mock login so you can view the UI.", apiError);
+        const mockUser = { name: "Demo User", email: data.email };
+        localStorage.setItem('mockEmployee', JSON.stringify(mockUser));
+        
+        // MOCK COOKIES: Set dummy tokens so they appear in the Application tab
+        document.cookie = "accessToken=mock_ey...access_token...123; path=/";
+        document.cookie = "refreshToken=mock_ey...refresh_token...456; path=/";
+        
+        dispatch(addEmployee(mockUser));
+      }
       
       navigate('/home');
     } catch (error) {
@@ -43,7 +51,14 @@ export const useAuth = () => {
       await new Promise((resolve) => setTimeout(resolve, 1500));
       
       // MOCK LOGIN: Populate Redux state so ProtectedRoutes allows access.
-      dispatch(addEmployee({ name: data.firstName || "Demo", email: data.email }));
+      const mockUser = { name: data.firstName || "Demo", email: data.email };
+      localStorage.setItem('mockEmployee', JSON.stringify(mockUser));
+      
+      // MOCK COOKIES: Set dummy tokens so they appear in the Application tab
+      document.cookie = "accessToken=mock_ey...access_token...123; path=/";
+      document.cookie = "refreshToken=mock_ey...refresh_token...456; path=/";
+      
+      dispatch(addEmployee(mockUser));
 
       navigate('/home');
     } catch (error) {

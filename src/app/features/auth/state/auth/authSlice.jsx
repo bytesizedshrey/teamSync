@@ -6,7 +6,7 @@ import { loginEmployee } from "./authAction";
 let authSlice = createSlice({
     name: "auth",
     initialState: {
-        employee : null,
+        employee : JSON.parse(localStorage.getItem('mockEmployee')) || null,
         isLoading : false,
     },
     reducers: {
@@ -15,6 +15,7 @@ let authSlice = createSlice({
             state.isLoading = false;
         },
         removeEmployee: (state) => {
+            localStorage.removeItem('mockEmployee');
             state.employee = null;
             state.isLoading = false;
         }
