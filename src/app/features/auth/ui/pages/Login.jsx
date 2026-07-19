@@ -1,21 +1,17 @@
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router';
-import { useAuth, InputField, AuthCard, BrandHeader, AuthDivider, SubmitButton } from '../../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
+import { InputField, AuthCard, BrandHeader, AuthDivider, SubmitButton } from '../components/AuthComponents';
 
 const Login = () => {
-  const { isLoading, showPass, togglePass, createSubmitHandler,navigate } = useAuth();
+  const { isLoading, showPass, togglePass, onLoginSubmit, navigate } = useAuth();
   const { register, handleSubmit, formState: { errors } } = useForm({ mode: 'onTouched' });
-
-  const onSubmit = createSubmitHandler((data) => {
-    console.log('Login data:', data);
-  });
 
   return (
     <AuthCard>
       <BrandHeader title="Welcome back" subtitle="Sign in to your workspace" />
       <AuthDivider />
       
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5" noValidate>
+      <form onSubmit={handleSubmit(onLoginSubmit)} className="flex flex-col gap-5" noValidate>
         <InputField
           id="email"
           label="Email address"

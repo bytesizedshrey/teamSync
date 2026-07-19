@@ -1,22 +1,18 @@
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router';
-import { useAuth, InputField, PasswordStrength, AuthCard, BrandHeader, AuthDivider, SubmitButton } from '../../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
+import { InputField, PasswordStrength, AuthCard, BrandHeader, AuthDivider, SubmitButton } from '../components/AuthComponents';
 
 const Register = () => {
-  const { isLoading, showPass, showConfirm, togglePass, toggleConfirm, createSubmitHandler,navigate } = useAuth();
+  const { isLoading, showPass, showConfirm, togglePass, toggleConfirm, onRegisterSubmit, navigate } = useAuth();
   const { register, handleSubmit, watch, formState: { errors } } = useForm({ mode: 'onTouched' });
   const password = watch('password', '');
-
-  const onSubmit = createSubmitHandler((data) => {
-    console.log('Register data:', data);
-  });
 
   return (
     <AuthCard wide>
       <BrandHeader title="Create account" subtitle="Join your team in seconds" />
       <AuthDivider />
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
+      <form onSubmit={handleSubmit(onRegisterSubmit)} className="flex flex-col gap-4" noValidate>
         {/* Name row */}
         <div className="grid grid-cols-2 gap-4" data-animate>
           <div className="flex flex-col gap-1.5">
@@ -81,20 +77,7 @@ const Register = () => {
           error={errors.confirmPassword} showToggle onToggle={toggleConfirm} showPass={showConfirm}
         />
 
-        <div className="flex items-start gap-2.5" data-animate>
-          <div className="relative mt-0.5 shrink-0">
-            <input id="terms" type="checkbox" className="peer sr-only" {...register('terms', { required: 'You must accept the terms' })} />
-            <label htmlFor="terms" className="w-4 h-4 rounded border border-zinc-700 bg-white/[0.04] peer-checked:bg-white/10 peer-checked:border-zinc-500 transition-all flex items-center justify-center cursor-pointer block">
-              <svg className="w-2.5 h-2.5 text-zinc-300 opacity-0 peer-checked:opacity-100" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M2 6l3 3 5-5"/>
-              </svg>
-            </label>
-          </div>
-          <p className="text-xs text-zinc-500 leading-relaxed">
-            I agree to the <a href="#" className="text-zinc-400 hover:text-white underline underline-offset-2 transition-colors">Terms of Service</a> and <a href="#" className="text-zinc-400 hover:text-white underline underline-offset-2 transition-colors">Privacy Policy</a>
-          </p>
-        </div>
-        {errors.terms && <p className="text-xs text-red-400 -mt-2">{errors.terms.message}</p>}
+
 
         <SubmitButton label="Create Account" isLoading={isLoading} />
       </form>
